@@ -48,15 +48,15 @@ docker_create_db_directories() {
 	if [ -n "${POSTGRES_INITDB_WALDIR:-}" ]; then
 		mkdir -p "$POSTGRES_INITDB_WALDIR"
 		if [ "$user" = '0' ]; then
-			find "$POSTGRES_INITDB_WALDIR" \! -user postgres -exec chown postgres '{}' +
+			find "$POSTGRES_INITDB_WALDIR" \! -user ivorysql -exec chown ivorysql '{}' +
 		fi
 		chmod 700 "$POSTGRES_INITDB_WALDIR"
 	fi
 
 	# allow the container to be started with `--user`
 	if [ "$user" = '0' ]; then
-		find "$PGDATA" \! -user postgres -exec chown postgres '{}' +
-		find /var/run/postgresql \! -user postgres -exec chown postgres '{}' +
+		find "$PGDATA" \! -user ivorysql -exec chown ivorysql '{}' +
+		find /var/run/postgresql \! -user ivorysql -exec chown ivorysql '{}' +
 	fi
 }
 
@@ -277,7 +277,7 @@ docker_temp_server_start() {
 
 # stop postgresql server after done setting up user and running scripts
 docker_temp_server_stop() {
-	PGUSER="${PGUSER:-postgres}" \
+	PGUSER="${PGUSER:-$IVORYSQL_USER}" \
 	pg_ctl -D "$PGDATA" -m fast -w stop
 }
 
@@ -309,8 +309,8 @@ _main() {
 		# setup data directories and permissions (when run as root)
 		docker_create_db_directories
 		if [ "$(id -u)" = '0' ]; then
-			# then restart script as postgres user
-			exec su-exec postgres "$BASH_SOURCE" "$@"
+			# then restart script as ivorysql user
+			exec gosu ivorysql "$BASH_SOURCE" "$@"
 		fi
 
 		# only run initialization on an empty data directory

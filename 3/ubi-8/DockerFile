@@ -4,8 +4,10 @@ RUN groupadd -g 1000 ivorysql; \
         useradd -u 1000 -g ivorysql -d /var/local/ivorysql -s /bin/sh ivorysql; \
         mkdir -p /var/local/ivorysql; \
         mkdir -p /usr/src/ivorysql; \
+        mkdir -p /var/lib/ivorysql; \
         chown -R ivorysql:ivorysql /var/local/ivorysql; \
-        chown -R ivorysql:ivorysql /usr/src/ivorysql
+        chown -R ivorysql:ivorysql /usr/src/ivorysql; \
+        chown -R ivorysql:ivorysql /var/lib/ivorysql
 
 RUN mkdir /docker-entrypoint-initdb.d
 
@@ -24,7 +26,8 @@ RUN mkdir -p /usr/src/ivorysql; \
     zlib-devel \
     openssl-devel \
     flex \
-    wget; \
+    wget \
+    dpkg; \
     dnf groupinstall -y "Development Tools";\
     dnf install -y \
     llvm-toolset llvm-devel lz4 lz4-devel lz4-libs clang-devel \
@@ -62,10 +65,13 @@ RUN mkdir -p /usr/src/ivorysql; \
 		/usr/local/share/man
 
 RUN chown -R ivorysql:ivorysql /var/local/ivorysql/ivorysql-$IVORY_MAJOR
-    
+RUN curl -o /usr/local/bin/gosu -SL "https://github.com/tianon/gosu/releases/download/1.11/gosu-amd64"
+RUN chmod +x /usr/local/bin/gosu
+
 FROM redhat/ubi8:latest
 
 COPY --from=builder /var/local/ivorysql /var/local/ivorysql/
+COPY --from=builder /usr/local/bin/gosu /usr/local/bin/gosu
 
 ENV IVORY_MAJOR 3
 ENV IVORY_VERSION 3.1
@@ -83,10 +89,9 @@ RUN chown -R ivorysql:ivorysql /usr/local/bin
 ENV PGDATA /var/local/ivorysql/ivorysql-$IVORY_MAJOR/data
 # this 1777 will be replaced by 0700 at runtime (allows semi-arbitrary "--user" values)
 RUN mkdir -p "$PGDATA" && chown -R ivorysql:ivorysql "$PGDATA" && chmod 1777 "$PGDATA"
+RUN mkdir -p /var/run/postgresql && chown -R postgres:postgres /var/run/postgresql && chmod 3777 /var/run/postgresql
 
-USER ivorysql
-
-VOLUME /var/local/ivorysql/ivorysql-$IVORY_MAJOR/data
+VOLUME /var/lib/ivorysql/data
 
 ENV PATH $PATH:/var/local/ivorysql/ivorysql-$IVORY_MAJOR/bin
 
