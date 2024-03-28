@@ -1,0 +1,16 @@
+{
+  "3": {
+    "ubi8": {
+      "arches": [
+        "amd64"
+      ],
+      "version": "3.1"
+    },
+    "redhat": "ubi8",
+    "major": 3,
+    "variants": [
+      "ubi8"
+    ],
+    "version": "3.1"
+  }
+}

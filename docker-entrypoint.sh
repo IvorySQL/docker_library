@@ -90,7 +90,7 @@ docker_init_database_dir() {
 
 	# --pwfile refuses to handle a properly-empty file (hence the "\n"): https://github.com/docker-library/postgres/issues/1025
 	eval 'initdb --username="$IVORYSQL_USER" --pwfile=<(printf "%s\n" "$IVORYSQL_PASSWORD") '"$IVORYSQL_INITDB_ARGS"' "$@"'
-
+	sed -ri "s!^#?(listen_addresses)\s*=\s*\S+.*!\1 = '*'!" $PGDATA/postgresql.conf
 	# unset/cleanup "nss_wrapper" bits
 	if [[ "${LD_PRELOAD:-}" == */libnss_wrapper.so ]]; then
 		rm -f "$NSS_WRAPPER_PASSWD" "$NSS_WRAPPER_GROUP"
@@ -347,7 +347,7 @@ _main() {
 			EOM
 		fi
 	fi
-	sed -ri "s!^#?(listen_addresses)\s*=\s*\S+.*!\1 = '*'!" $PGDATA/postgresql.conf
+	
 	exec "$@"
 }
 
