@@ -92,7 +92,7 @@ ENV PGDATA /var/local/ivorysql/ivorysql-$IVORY_MAJOR/data
 RUN mkdir -p "$PGDATA" && chown -R ivorysql:ivorysql "$PGDATA" && chmod 1777 "$PGDATA"
 RUN mkdir -p /var/run/postgresql && chown -R ivorysql:ivorysql /var/run/postgresql && chmod 3777 /var/run/postgresql
 
-VOLUME /var/lib/ivorysql/data
+VOLUME $PGDATA
 
 ENV PATH $PATH:/var/local/ivorysql/ivorysql-$IVORY_MAJOR/bin
 
