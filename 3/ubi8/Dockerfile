@@ -53,9 +53,9 @@ RUN mkdir -p /usr/src/ivorysql; \
 	; \
     rm ivorysql.tar.gz; \
     cd /usr/src/ivorysql; \
-    wget http://mirror.centos.org/centos/7/os/x86_64/Packages/bison-devel-3.0.4-2.el7.x86_64.rpm; \
-    dnf install -y bison-devel-3.0.4-2.el7.x86_64.rpm; \
-    wget https://www.rpmfind.net/linux/centos/8-stream/AppStream/x86_64/os/Packages/bison-3.0.4-10.el8.x86_64.rpm; \
+    wget https://repo.almalinux.org/almalinux/8/PowerTools/x86_64/os/Packages/bison-devel-3.0.4-10.el8.x86_64.rpm; \
+    dnf install -y bison-devel-3.0.4-10.el8.x86_64.rpm; \
+    wget https://repo.almalinux.org/almalinux/8/AppStream/x86_64/os/Packages/bison-3.0.4-10.el8.x86_64.rpm; \
     dnf install -y bison-3.0.4-10.el8.x86_64.rpm; \
     ./configure \
             --prefix=/var/local/ivorysql/ivorysql-$IVORY_MAJOR \
