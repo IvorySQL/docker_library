@@ -109,6 +109,6 @@ ENTRYPOINT ["docker-entrypoint.sh"]
 
 STOPSIGNAL SIGINT
 
-EXPOSE 5432 5866
+EXPOSE 5432 5866 1521
 
 CMD ["postgres"]
