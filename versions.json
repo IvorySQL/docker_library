@@ -4,13 +4,13 @@
       "arches": [
         "amd64"
       ],
-      "version": "3.2"
+      "version": "3.3"
     },
     "redhat": "ubi8",
     "major": 3,
     "variants": [
       "ubi8"
     ],
-    "version": "3.2"
+    "version": "3.3"
   }
 }
