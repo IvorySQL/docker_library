@@ -1,15 +1,16 @@
 {
   "3": {
-    "ubi8": {
+    "debian:12": {
       "arches": [
-        "amd64"
+        "amd64",
+        "arm64"
       ],
       "version": "3.3"
     },
-    "redhat": "ubi8",
+    "debian": "12",
     "major": 3,
     "variants": [
-      "ubi8"
+      "debian:12"
     ],
     "version": "3.3"
   }
