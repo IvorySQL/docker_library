@@ -43,26 +43,21 @@ dirCommit() {
 }
 
 getArches() {
-    local repo="$1"; shift
-    local officialImagesUrl='https://github.com/docker-library/official-images/raw/master/library/'
+	local repo="$1"; shift
+	local officialImagesUrl='https://github.com/docker-library/official-images/raw/master/library/'
 
-    eval "declare -g -A parentRepoToArches=( $(
-        find -name 'Dockerfile' -exec awk '
-                toupper($1) == "FROM" {
-                    base_image=$2
-                    # Remove the --platform flag if it is present
-                    sub(/^--platform=[^ ]+ /, "", base_image)
-                    # Only include valid base images
-                    if (base_image !~ /^('"$repo"'|scratch|.*\/.*)(:|$)/) {
-                        print "'"$officialImagesUrl"'" base_image
-                    }
-                }
-            ' '{}' + \
-            | sort -u \
-            | xargs bashbrew cat --format '[{{ .RepoName }}:{{ .TagName }}]="{{ join " " .TagEntry.Architectures }}"'
-    ) )"
+	eval "declare -g -A parentRepoToArches=( $(
+		find -name 'Dockerfile' -exec awk '
+				toupper($1) == "FROM" && $2 !~ /^('"$repo"'|scratch|.*\/.*)(:|$)/ {
+					print "'"$officialImagesUrl"'" $2
+				}
+			' '{}' + \
+			| sort -u \
+			| xargs bashbrew cat --format '[{{ .RepoName }}:{{ .TagName }}]="{{ join " " .TagEntry.Architectures }}"'
+	) )"
 }
 getArches 'postgres'
+
 
 
 cat <<-EOH
