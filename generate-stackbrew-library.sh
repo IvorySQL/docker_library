@@ -44,14 +44,20 @@ dirCommit() {
 getArches() {
     local repo="$1"; shift
     local officialImagesUrl='https://github.com/docker-library/official-images/raw/master/library/debian'
-	print "'"$officialImagesUrl"'"
-    # Fetch the content from the fixed URL and process it
-    eval "declare -g -A parentRepoToArches=( $(
-        curl -s "$officialImagesUrl" \
-        | xargs bashbrew cat --format '[{{ .RepoName }}:{{ .TagName }}]="{{ join " " .TagEntry.Architectures }}"'
-    ) )"
+
+    echo "Fetching from $officialImagesUrl"
+
+    # Fetch the content from the fixed URL
+    curl -s "$officialImagesUrl" | while IFS= read -r line; do
+        # Process each line to extract repo and tag names
+        if [[ "$line" =~ ^Tags:\ (.*) ]]; then
+            tags="${BASH_REMATCH[1]}"
+            echo "Tags found: $tags"
+        fi
+    done
 }
-getArches 'postgres'
+getArches 'debian'
+
 
 cat <<-EOH
 # this file is generated via https://github.com/docker-library/postgres/blob/$(fileCommit "$self")/$self
@@ -113,14 +119,3 @@ for version; do
 		EOE
 	done
 done
-getArches() {
-    local repo="$1"; shift
-    local officialImagesUrl='https://github.com/docker-library/official-images/raw/master/library/debian'
-
-    # Fetch the content from the fixed URL and process it
-    eval "declare -g -A parentRepoToArches=( $(
-        curl -s "$officialImagesUrl" \
-        | xargs bashbrew cat --format '[{{ .RepoName }}:{{ .TagName }}]="{{ join " " .TagEntry.Architectures }}"'
-    ) )"
-}
-getArches 'postgres'
