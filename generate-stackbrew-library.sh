@@ -44,19 +44,12 @@ dirCommit() {
 
 getArches() {
     local repo="$1"; shift
-    local officialImagesUrl='https://github.com/docker-library/official-images/raw/master/library/'
+    local officialImagesUrl='https://github.com/docker-library/official-images/raw/master/library/debian'
 
+    # Fetch the content from the fixed URL and process it
     eval "declare -g -A parentRepoToArches=( $(
-        find -name 'Dockerfile' -exec awk '
-                toupper($1) == "FROM" && $2 !~ /^('"$repo"'|scratch|.*\/.*)(:|$)/ {
-                    # Skip "--platform" or other options from being included in the URL
-                    # Extract the base image without extra parameters
-                    split($2, parts, " ")
-                    print "'"$officialImagesUrl"'" parts[2]
-                }
-            ' '{}' + \
-            | sort -u \
-            | xargs bashbrew cat --format '[{{ .RepoName }}:{{ .TagName }}]="{{ join " " .TagEntry.Architectures }}"'
+        curl -s "$officialImagesUrl" \
+        | xargs bashbrew cat --format '[{{ .RepoName }}:{{ .TagName }}]="{{ join " " .TagEntry.Architectures }}"'
     ) )"
 }
 getArches 'postgres'
