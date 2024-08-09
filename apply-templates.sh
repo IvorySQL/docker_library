@@ -51,7 +51,7 @@ for version; do
 
 		case "$variant" in
 			*)
-				template='Dockerfile-redhat.template'
+				template='Dockerfile-debian.template'
 				;;
 		esac
 

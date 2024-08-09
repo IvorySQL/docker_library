@@ -1,15 +1,15 @@
 {
   "3": {
-    "ubi8": {
+    "bookworm": {
       "arches": [
-        "amd64"
+        "amd64",
+        "arm64"
       ],
       "version": "3.3"
     },
-    "redhat": "ubi8",
     "major": 3,
     "variants": [
-      "ubi8"
+      "bookworm"
     ],
     "version": "3.3"
   }

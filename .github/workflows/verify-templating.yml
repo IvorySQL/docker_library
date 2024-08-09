@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Apply Templates
-        run: ./apply-templates.sh
+        run: chmod +x ./apply-templates.sh
       - name: Check Git Status
         run: |
           status="$(git status --short)"
