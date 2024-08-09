@@ -47,8 +47,7 @@ getArches() {
 
     echo "Fetching from $officialImagesUrl"
 
-    bashbrew cat --format '[{{ .RepoName }}:{{ range .Tags }}{{ . }} {{ end }}]="{{ join " " .Architectures }}"' "$officialImagesUrl"
-
+    bashbrew cat --format '[{{ .RepoName }}:{{ .TagName }}]="{{ join " " .TagEntry.Architectures }}"' $officialImagesUrl
 }
 getArches 'debian'
 
