@@ -103,7 +103,7 @@ for version; do
         dir="$version/$variant"
         commit="$(dirCommit "$dir")"
 
-        # Handle FROM with --platform parameter
+        # Handle FROM with --platform parameter correctly
         parent="$(awk '
             toupper($1) == "FROM" {
                 base_image=""
