@@ -17,7 +17,5 @@ jobs:
       - uses: actions/checkout@v3
       - name: Apply Templates
         run: ./apply-templates.sh
-      - name: Check Git Status
-        run: |
-          status="$(git status --short)"
-          [ -z "$status" ]
+      - name: Clean workspace
+        run: git clean -fdx
