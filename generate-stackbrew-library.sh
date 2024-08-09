@@ -49,7 +49,7 @@ getArches() {
 
     bashbrew cat --format '[{{ .RepoName }}:{{ .TagName }}]="{{ join " " .TagEntry.Architectures }}"' $officialImagesUrl
 }
-getArches 'debian'
+getArches 'postgres'
 
 
 cat <<-EOH
