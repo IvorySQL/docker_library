@@ -3,7 +3,7 @@
     "bookworm": {
       "arches": [
         "amd64",
-        "arm64"
+        "arm64v8"
       ],
       "version": "3.3"
     },
