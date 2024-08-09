@@ -48,8 +48,14 @@ getArches() {
 
     eval "declare -g -A parentRepoToArches=( $(
         find -name 'Dockerfile' -exec awk '
-                toupper($1) == "FROM" && $2 !~ /^('"$repo"'|scratch|.*\/.*)(:|$)/ {
-                    print "'"$officialImagesUrl"'" $2
+                toupper($1) == "FROM" {
+                    base_image=$2
+                    # Remove the --platform flag if it is present
+                    sub(/^--platform=[^ ]+ /, "", base_image)
+                    # Only include valid base images
+                    if (base_image !~ /^('"$repo"'|scratch|.*\/.*)(:|$)/) {
+                        print "'"$officialImagesUrl"'" base_image
+                    }
                 }
             ' '{}' + \
             | sort -u \
@@ -57,6 +63,7 @@ getArches() {
     ) )"
 }
 getArches 'postgres'
+
 
 cat <<-EOH
 # this file is generated via https://github.com/docker-library/postgres/blob/$(fileCommit "$self")/$self
