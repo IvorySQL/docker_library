@@ -47,14 +47,7 @@ getArches() {
 
     echo "Fetching from $officialImagesUrl"
 
-    # Fetch the content from the fixed URL
-    curl -s "$officialImagesUrl" | while IFS= read -r line; do
-        # Process each line to extract repo and tag names
-        if [[ "$line" =~ ^Tags:\ (.*) ]]; then
-            tags="${BASH_REMATCH[1]}"
-            echo "Tags found: $tags"
-        fi
-    done
+    bashbrew cat --format '[{{ .RepoName }}:{{ .TagName }}]="{{ join " " .TagEntry.Architectures }}"' "$officialImagesUrl"
 }
 getArches 'debian'
 
