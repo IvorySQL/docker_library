@@ -52,7 +52,7 @@ getArches() {
                     # Skip "--platform" or other options from being included in the URL
                     # Extract the base image without extra parameters
                     split($2, parts, " ")
-                    print "'"$officialImagesUrl"'" parts[1]
+                    print "'"$officialImagesUrl"'" parts[2]
                 }
             ' '{}' + \
             | sort -u \
