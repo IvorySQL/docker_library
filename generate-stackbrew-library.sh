@@ -106,7 +106,6 @@ for version; do
         # Handle FROM with --platform parameter
         parent="$(awk '
             toupper($1) == "FROM" {
-                # Extract the base image and platform
                 base_image=""
                 platform=""
                 for (i = 2; i <= NF; i++) {
@@ -116,7 +115,6 @@ for version; do
                         base_image=$i
                     }
                 }
-                # Print base image and platform separately
                 print base_image, platform
             }
         ' "$dir/Dockerfile")"
