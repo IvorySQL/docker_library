@@ -1,16 +1,16 @@
 {
   "3": {
-    "debian:12": {
+    "bookworm": {
       "arches": [
         "amd64",
         "arm64"
       ],
-      "version": "3.3"
+      "version": "3.3",
+      "codename": "12"
     },
-    "debian": "12",
     "major": 3,
     "variants": [
-      "debian:12"
+      "bookworm"
     ],
     "version": "3.3"
   }
