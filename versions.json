@@ -5,8 +5,7 @@
         "amd64",
         "arm64"
       ],
-      "version": "3.3",
-      "codename": "12"
+      "version": "3.3"
     },
     "major": 3,
     "variants": [
