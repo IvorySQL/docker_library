@@ -103,7 +103,7 @@ for version; do
 		dir="$version/$variant"
 		commit="$(dirCommit "$dir")"
 
-		parent="$(awk 'toupper($1) == "FROM" { print $2 }' "$dir/Dockerfile")"
+		parent="$(awk 'toupper($1) == "FROM" { print $3 }' "$dir/Dockerfile")"
 		arches="amd64"
 
 		variantAliases=( "${versionAliases[@]/%/-$variant}" )
