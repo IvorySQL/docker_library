@@ -58,7 +58,6 @@ getArches() {
 }
 getArches 'postgres'
 
-
 cat <<-EOH
 # this file is generated via https://github.com/docker-library/postgres/blob/$(fileCommit "$self")/$self
 
@@ -104,7 +103,7 @@ for version; do
 		dir="$version/$variant"
 		commit="$(dirCommit "$dir")"
 
-		parent="$(awk 'toupper($1) == "FROM" { print $ }' "$dir/Dockerfile")"
+		parent="$(awk 'toupper($1) == "FROM" { print $2 }' "$dir/Dockerfile")"
 		arches="amd64"
 
 		variantAliases=( "${versionAliases[@]/%/-$variant}" )
