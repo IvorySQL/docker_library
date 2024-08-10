@@ -44,7 +44,7 @@ dirCommit() {
 
 getArches() {
 	local repo="$1"; shift
-	local officialImagesUrl='https://github.com/docker-library/official-images/raw/master/library/debian:bookworm-slim'
+	local officialImagesUrl='https://github.com/docker-library/official-images/raw/master/library/debian'
 
 	eval "declare -g -A parentRepoToArches=( $(
 		find -name 'Dockerfile' -exec awk '
