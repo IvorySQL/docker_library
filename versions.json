@@ -1,5 +1,6 @@
 {
   "3": {
+    "debian": "bookworm",
     "bookworm": {
       "arches": [
         "amd64",
