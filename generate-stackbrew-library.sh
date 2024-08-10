@@ -44,12 +44,12 @@ dirCommit() {
 
 getArches() {
 	local repo="$1"; shift
-	local officialImagesUrl='https://github.com/docker-library/official-images/raw/master/library/debian'
+	local officialImagesUrl='https://github.com/docker-library/official-images/raw/master/library/'
 
 	eval "declare -g -A parentRepoToArches=( $(
 		find -name 'Dockerfile' -exec awk '
-				toupper($1) == "FROM" && $2 !~ /^('"$repo"'|scratch|.*\/.*)(:|$)/ {
-					print "'"$officialImagesUrl"'"
+				toupper($1) == "FROM" && $10 !~ /^('"$repo"'|scratch|.*\/.*)(:|$)/ {
+					print "'"$officialImagesUrl"'" $10
 				}
 			' '{}' + \
 			| sort -u \
@@ -103,7 +103,7 @@ for version; do
 		dir="$version/$variant"
 		commit="$(dirCommit "$dir")"
 
-		parent="$(awk 'toupper($1) == "FROM" { print $2 }' "$dir/Dockerfile")"
+		parent="$(awk 'toupper($1) == "FROM" { print $ }' "$dir/Dockerfile")"
 		arches="amd64"
 
 		variantAliases=( "${versionAliases[@]/%/-$variant}" )
