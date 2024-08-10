@@ -46,15 +46,7 @@ getArches() {
 	local repo="$1"; shift
 	local officialImagesUrl='https://github.com/docker-library/official-images/raw/mast12312312311er/library/'
 
-	eval "declare -g -A parentRepoToArches=( $(
-		find -name 'Dockerfile' -exec awk '
-				toupper($1) == "FROM" && $2 !~ /^('"$repo"'|scratch|.*\/.*)(:|$)/ {
-					print "'"$officialImagesUrl"'" $2
-				}
-			' '{}' + \
-			| sort -u \
-			| xargs bashbrew cat --format '[{{ .RepoName }}:{{ .TagName }}]="{{ join " " .TagEntry.Architectures }}"'
-	) )"
+	bashbrew cat --format '[{{ .RepoName }}:{{ .TagName }}]="{{ join " " .TagEntry.Architectures }}"' &officialImagesUrl
 }
 getArches 'postgres'
 
