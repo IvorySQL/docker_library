@@ -103,7 +103,8 @@ for version; do
 		dir="$version/$variant"
 		commit="$(dirCommit "$dir")"
 
-		parent=("$(awk 'toupper($1) == "FROM" { print $3 }' "$dir/Dockerfile")" | sort -u)
+	 	#parent=("$(awk 'toupper($1) == "FROM" { print $3 }' "$dir/Dockerfile")" | sort -u)
+   		parent=$((awk 'toupper($1) == "FROM" { print $3 }' "$dir/Dockerfile") |sort -u)
 		arches="${parentRepoToArches[$parent]}"
 
 		variantAliases=( "${versionAliases[@]/%/-$variant}" )
