@@ -5,7 +5,7 @@
 #
 
 # Use Debian  as the base image
-FROM  debian:bookworm-slim as builder 
+FROM --platform=$TARGETPLATFORM debian:bookworm-slim as builder 
 
 # explicitly set user/group IDs
 RUN groupadd -g 1000 ivorysql; \
@@ -111,7 +111,7 @@ RUN curl -o /usr/local/bin/gosu -SL "https://github.com/tianon/gosu/releases/dow
 
 RUN chmod +x /usr/local/bin/gosu
 
-FROM  debian:bookworm-slim
+FROM --platform=$TARGETPLATFORM debian:bookworm-slim
 
 COPY --from=builder /var/local/ivorysql /var/local/ivorysql/
 COPY --from=builder /usr/local/bin/gosu /usr/local/bin/gosu

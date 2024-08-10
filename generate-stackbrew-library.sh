@@ -48,8 +48,8 @@ getArches() {
 
 	eval "declare -g -A parentRepoToArches=( $(
 		find -name 'Dockerfile' -exec awk '
-				toupper($1) == "FROM" && $2 !~ /^('"$repo"'|scratch|.*\/.*)(:|$)/ {
-					print "'"$officialImagesUrl"'" $2
+				toupper($1) == "FROM" && $4 !~ /^('"$repo"'|scratch|.*\/.*)(:|$)/ {
+					print "'"$officialImagesUrl"'" $4
 				}
 			' '{}' + \
 			| sort -u \
@@ -103,7 +103,7 @@ for version; do
 		dir="$version/$variant"
 		commit="$(dirCommit "$dir")"
 
-		parent="$(awk 'toupper($1) == "FROM" { print $2 }' "$dir/Dockerfile")"
+		parent="$(awk 'toupper($1) == "FROM" { print $4 }' "$dir/Dockerfile")"
 		arches="amd64"
 
 		variantAliases=( "${versionAliases[@]/%/-$variant}" )
