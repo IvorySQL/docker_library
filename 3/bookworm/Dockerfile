@@ -5,7 +5,7 @@
 #
 
 # Use Debian  as the base image
-FROM  debian:bookworm-slim as builder 
+FROM debian:bookworm-slim as builder 
 
 # explicitly set user/group IDs
 RUN groupadd -g 1000 ivorysql; \
