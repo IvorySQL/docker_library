@@ -15,7 +15,6 @@ jq \
 				[
 					"# force us to build debs instead of downloading them",
 					$prefix,
-					("for df in " + ([ .meta.dockerfiles[] | @sh ] | join(" ")) + "; do " + $dfMunge + "; done"),
 					.runs.build
 				] | join ("\n")
 			)
