@@ -50,6 +50,9 @@ for version; do
 		cp -a docker-entrypoint.sh docker-ensure-initdb.sh "$dir/"
 
 		case "$variant" in
+		    ubi8*)
+			    template='Dockerfile-redhat.template'
+				;;
 			*)
 				template='Dockerfile-debian.template'
 				;;
