@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -Eeuox pipefail
+set -Eeuo pipefail
 
 declare -A aliases=(
 	[16]='latest'
@@ -103,13 +103,21 @@ for version; do
 		dir="$version/$variant"
 		commit="$(dirCommit "$dir")"
 
-	 	#parent=("$(awk 'toupper($1) == "FROM" { print $3 }' "$dir/Dockerfile")" | sort -u)
-   		parent=$((awk 'toupper($1) == "FROM" { print $2 }' "$dir/Dockerfile") |sort -u)
-		arches="${parentRepoToArches[$parent]}"
+		# parent="$(awk 'toupper($1) == "FROM" { print $2 } as builder' "$dir/Dockerfile")"
+		# arches="${parentRepoToArches[$parent]}"
+
+		case "$variant" in
+		    ubi8*)
+			    arches="amd64"
+				;;
+			*)
+				arches="amd64,arm64v8"
+				;;
+		esac
+
 
 		variantAliases=( "${versionAliases[@]/%/-$variant}" )
 		variantAliases=( "${variantAliases[@]//latest-/}" )
-
 
 		echo
 		cat <<-EOE
