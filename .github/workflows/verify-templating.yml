@@ -11,10 +11,14 @@ defaults:
 
 jobs:
   apply-templates:
-    name: Check For Uncomitted Changes
+    name: Check For Uncommitted Changes
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: Discard all uncommitted changes
+        run: |
+          git reset --hard HEAD
+          git clean -fdx
       - name: Apply Templates
         run: ./apply-templates.sh
       - name: Check Git Status
