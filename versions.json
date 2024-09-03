@@ -7,9 +7,18 @@
       "version": "3.3"
     },
     "redhat": "ubi8",
+    "debian": "bookworm",
+    "bookworm": {
+      "arches": [
+        "amd64",
+        "arm64v8"
+      ],
+      "version": "3.3"
+    },
     "major": 3,
     "variants": [
-      "ubi8"
+      "ubi8",
+      "bookworm"
     ],
     "version": "3.3"
   }

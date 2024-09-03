@@ -103,8 +103,18 @@ for version; do
 		dir="$version/$variant"
 		commit="$(dirCommit "$dir")"
 
-		parent="$(awk 'toupper($1) == "FROM" { print $2 }' "$dir/Dockerfile")"
-		arches="amd64"
+		# parent="$(awk 'toupper($1) == "FROM" { print $2 } as builder' "$dir/Dockerfile")"
+		# arches="${parentRepoToArches[$parent]}"
+
+		case "$variant" in
+		    ubi8*)
+			    arches="amd64"
+				;;
+			*)
+				arches="amd64,arm64v8"
+				;;
+		esac
+
 
 		variantAliases=( "${versionAliases[@]/%/-$variant}" )
 		variantAliases=( "${variantAliases[@]//latest-/}" )
