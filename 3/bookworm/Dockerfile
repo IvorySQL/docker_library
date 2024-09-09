@@ -106,8 +106,7 @@ RUN rm -rf \
 		/usr/local/share/man
 
 RUN chown -R ivorysql:ivorysql /var/local/ivorysql/ivorysql-$IVORY_MAJOR 
-RUN dpkgArch="$(dpkg --print-architecture)"; # amd64 | arm64v8
-RUN curl -o /usr/local/bin/gosu -SL "https://github.com/tianon/gosu/releases/download/1.11/gosu-$dpkgArch"
+RUN wget -o /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/1.11/gosu-$(dpkg --print-architecture)" # amd64 | arm64v8
 
 RUN chmod +x /usr/local/bin/gosu
 
