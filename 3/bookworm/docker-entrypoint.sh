@@ -61,7 +61,7 @@ docker_create_db_directories() {
 }
 
 # initialize empty PGDATA directory with new database via 'initdb'
-# arguments to `initdb` can be passed via IVORYSQL_INITDB_ARGS or as arguments to this function
+# arguments to `initdb` can be passed via POSTGRES_INITDB_ARGS or as arguments to this function
 # `initdb` automatically creates the "postgres", "template0", and "template1" dbnames
 # this is also where the database user is created, specified by `IVORYSQL_USER` env
 docker_init_database_dir() {
@@ -89,9 +89,11 @@ docker_init_database_dir() {
 	fi
 
 	# --pwfile refuses to handle a properly-empty file (hence the "\n"): https://github.com/docker-library/postgres/issues/1025
-	eval 'initdb --username="$IVORYSQL_USER" --pwfile=<(printf "%s\n" "$IVORYSQL_PASSWORD") '"$IVORYSQL_INITDB_ARGS"' "$@"'
+	eval 'initdb --username="$IVORYSQL_USER" --pwfile=<(printf "%s\n" "$IVORYSQL_PASSWORD") '"$POSTGRES_INITDB_ARGS"' "$@"'
 	sed -ri "s!^#?(listen_addresses)\s*=\s*\S+.*!\1 = '*'!" $PGDATA/postgresql.conf
-	sed -ri "s!^#?(ivorysql.listen_addresses)\s*=\s*\S+.*!\1 = '*'!" $PGDATA/ivorysql.conf
+	if [ -e "$PGDATA/ivorysql.conf" ]; then
+    	sed -ri "s!^#?(ivorysql.listen_addresses)\s*=\s*\S+.*!\1 = '*'!" $PGDATA/ivorysql.conf
+	fi
 	# unset/cleanup "nss_wrapper" bits
 	if [[ "${LD_PRELOAD:-}" == */libnss_wrapper.so ]]; then
 		rm -f "$NSS_WRAPPER_PASSWD" "$NSS_WRAPPER_GROUP"
@@ -325,7 +327,7 @@ _main() {
 			pg_setup_hba_conf "$@"
 
 			# PGPASSWORD is required for psql when authentication is required for 'local' connections via pg_hba.conf and is otherwise harmless
-			# e.g. when '--auth=md5' or '--auth-local=md5' is used in IVORYSQL_INITDB_ARGS
+			# e.g. when '--auth=md5' or '--auth-local=md5' is used in POSTGRES_INITDB_ARGS
 			export PGPASSWORD="${PGPASSWORD:-$IVORYSQL_PASSWORD}"
 			docker_temp_server_start "$@"
 
