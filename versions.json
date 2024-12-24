@@ -21,5 +21,28 @@
       "bookworm"
     ],
     "version": "3.4"
+  },
+  "4": {
+    "ubi8": {
+      "arches": [
+        "amd64"
+      ],
+      "version": "4.0"
+    },
+    "redhat": "ubi8",
+    "debian": "bookworm",
+    "bookworm": {
+      "arches": [
+        "amd64",
+        "arm64v8"
+      ],
+      "version": "4.0"
+    },
+    "major": 4,
+    "variants": [
+      "ubi8",
+      "bookworm"
+    ],
+    "version": "4.0"
   }
 }
