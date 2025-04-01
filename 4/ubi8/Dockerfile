@@ -19,7 +19,7 @@ RUN groupadd -g 1000 ivorysql; \
 RUN mkdir /docker-entrypoint-initdb.d
 
 ENV IVORY_MAJOR 4
-ENV IVORY_VERSION 4.2
+ENV IVORY_VERSION 4.4
 
 RUN curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-8.repo; \
     sed -i -e '/mirrors.cloud.aliyuncs.com/d' -e '/mirrors.aliyuncs.com/d' /etc/yum.repos.d/CentOS-Base.repo
@@ -53,10 +53,10 @@ RUN mkdir -p /usr/src/ivorysql; \
 	; \
     rm ivorysql.tar.gz; \
     cd /usr/src/ivorysql; \
-    wget https://repo.almalinux.org/almalinux/8/PowerTools/x86_64/os/Packages/bison-devel-3.0.4-10.el8.x86_64.rpm; \
-    dnf install -y bison-devel-3.0.4-10.el8.x86_64.rpm; \
-    wget https://repo.almalinux.org/almalinux/8/AppStream/x86_64/os/Packages/bison-3.0.4-10.el8.x86_64.rpm; \
-    dnf install -y bison-3.0.4-10.el8.x86_64.rpm; \
+    wget https://repo.almalinux.org/almalinux/8/PowerTools/$(arch)/os/Packages/bison-devel-3.0.4-10.el8.$(arch).rpm; \
+    dnf install -y bison-devel-3.0.4-10.el8.$(arch).rpm; \
+    wget https://repo.almalinux.org/almalinux/8/AppStream/$(arch)/os/Packages/bison-3.0.4-10.el8.$(arch).rpm; \
+    dnf install -y bison-3.0.4-10.el8.$(arch).rpm; \
     ./configure \
             --prefix=/var/local/ivorysql/ivorysql-$IVORY_MAJOR \
             --enable-cassert --enable-debug --enable-rpath --with-tcl \
@@ -72,16 +72,21 @@ RUN mkdir -p /usr/src/ivorysql; \
 		/usr/local/share/man
 
 RUN chown -R ivorysql:ivorysql /var/local/ivorysql/ivorysql-$IVORY_MAJOR
-RUN curl -o /usr/local/bin/gosu -SL "https://github.com/tianon/gosu/releases/download/1.11/gosu-amd64"
-RUN chmod +x /usr/local/bin/gosu
-
+RUN ARCH="$(uname -m)"; \
+    case "${ARCH}" in \
+        x86_64)  ARCH='amd64' ;; \
+        aarch64) ARCH='arm64' ;; \
+        *) echo "Unsupported architecture: ${ARCH}"; exit 1 ;; \
+    esac; \
+    curl -o /usr/local/bin/gosu -SL "https://github.com/tianon/gosu/releases/download/1.11/gosu-${ARCH}"; \
+    chmod +x /usr/local/bin/gosu
 FROM redhat/ubi8:latest
 
 COPY --from=builder /var/local/ivorysql /var/local/ivorysql/
 COPY --from=builder /usr/local/bin/gosu /usr/local/bin/gosu
 
 ENV IVORY_MAJOR 4
-ENV IVORY_VERSION 4.2
+ENV IVORY_VERSION 4.4
 
 RUN mkdir /docker-entrypoint-initdb.d
 
