@@ -128,7 +128,7 @@ RUN apt-get update && \
         libkrb5-dev \
         libxslt1-dev \
         libldap-common \
-        libldap-2.5-0   \
+        {{ if env.variant == "bookworm" then "libldap-2.5-0 " else "libldap2" end }}  \
         libldap2-dev     \
         libreadline-dev \
         libicu-dev && \

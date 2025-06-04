@@ -44,5 +44,19 @@
       "bookworm"
     ],
     "version": "4.4"
+  },
+  "1": {
+    "debian": "trixie",
+    "trixie": {
+      "arches": [
+        "amd64"
+      ],
+      "version": "1.17"
+    },
+    "major": 1,
+    "variants": [
+      "trixie"
+    ],
+    "version": "1.17"
   }
 }
