@@ -27,7 +27,7 @@
       "arches": [
         "amd64"
       ],
-      "version": "4.4"
+      "version": "4.5"
     },
     "redhat": "ubi8",
     "debian": "bookworm",
@@ -36,14 +36,14 @@
         "amd64",
         "arm64v8"
       ],
-      "version": "4.4"
+      "version": "4.5"
     },
     "major": 4,
     "variants": [
       "ubi8",
       "bookworm"
     ],
-    "version": "4.4"
+    "version": "4.5"
   },
   "1": {
     "debian": "trixie",
