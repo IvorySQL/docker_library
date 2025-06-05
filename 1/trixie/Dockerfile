@@ -1,5 +1,11 @@
+#
+# NOTE: THIS DOCKERFILE IS GENERATED VIA "apply-templates.sh"
+#
+# PLEASE DO NOT EDIT IT DIRECTLY.
+#
+
 # Use Debian  as the base image
-FROM  debian:{{ env.variant }}-slim as builder 
+FROM  debian:trixie-slim as builder 
 
 # explicitly set user/group IDs
 RUN groupadd -g 1000 ivorysql; \
@@ -14,8 +20,8 @@ RUN groupadd -g 1000 ivorysql; \
 RUN mkdir /docker-entrypoint-initdb.d
 
 # Set environment variables for IvorySQL
-ENV IVORY_MAJOR {{ env.version }}
-ENV IVORY_VERSION {{ .[env.variant].version }}
+ENV IVORY_MAJOR 1
+ENV IVORY_VERSION 1.17
 ARG USE_CHINA_MIRROR=false
 
 # Use China mirror if specified
@@ -104,13 +110,13 @@ RUN wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/downloa
 
 RUN chmod +x /usr/local/bin/gosu
 
-FROM  debian:{{ env.variant }}-slim
+FROM  debian:trixie-slim
 
 COPY --from=builder /var/local/ivorysql /var/local/ivorysql/
 COPY --from=builder /usr/local/bin/gosu /usr/local/bin/gosu
 
-ENV IVORY_MAJOR {{ env.version }}
-ENV IVORY_VERSION {{ .[env.variant].version }}
+ENV IVORY_MAJOR 1
+ENV IVORY_VERSION 1.17
 ARG USE_CHINA_MIRROR=false
 RUN mkdir /docker-entrypoint-initdb.d
 
@@ -128,7 +134,7 @@ RUN apt-get update && \
         libkrb5-dev \
         libxslt1-dev \
         libldap-common \
-        {{ if env.variant == "bookworm" then "libldap-2.5-0 " else "libldap2" end }}  \
+        libldap2  \
         libldap2-dev     \
         libreadline-dev \
         libicu-dev && \
