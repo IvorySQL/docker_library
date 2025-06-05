@@ -19,7 +19,7 @@ RUN groupadd -g 1000 ivorysql; \
 RUN mkdir /docker-entrypoint-initdb.d
 
 ENV IVORY_MAJOR 4
-ENV IVORY_VERSION 4.4
+ENV IVORY_VERSION 4.5
 
 RUN curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-8.repo; \
     sed -i -e '/mirrors.cloud.aliyuncs.com/d' -e '/mirrors.aliyuncs.com/d' /etc/yum.repos.d/CentOS-Base.repo
@@ -80,13 +80,14 @@ RUN ARCH="$(uname -m)"; \
     esac; \
     curl -o /usr/local/bin/gosu -SL "https://github.com/tianon/gosu/releases/download/1.11/gosu-${ARCH}"; \
     chmod +x /usr/local/bin/gosu
+
 FROM redhat/ubi8:latest
 
 COPY --from=builder /var/local/ivorysql /var/local/ivorysql/
 COPY --from=builder /usr/local/bin/gosu /usr/local/bin/gosu
 
 ENV IVORY_MAJOR 4
-ENV IVORY_VERSION 4.4
+ENV IVORY_VERSION 4.5
 
 RUN mkdir /docker-entrypoint-initdb.d
 
