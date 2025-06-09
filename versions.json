@@ -7,8 +7,18 @@
       "version": "3.4"
     },
     "redhat": "ubi8",
-    "debian": "bookworm",
+    "debian": [
+      "bookworm",
+      "trixie"
+    ],
     "bookworm": {
+      "arches": [
+        "amd64",
+        "arm64v8"
+      ],
+      "version": "3.4"
+    },
+    "trixie": {
       "arches": [
         "amd64",
         "arm64v8"
@@ -18,7 +28,8 @@
     "major": 3,
     "variants": [
       "ubi8",
-      "bookworm"
+      "bookworm",
+      "trixie"
     ],
     "version": "3.4"
   },
@@ -30,8 +41,18 @@
       "version": "4.5"
     },
     "redhat": "ubi8",
-    "debian": "bookworm",
+    "debian": [
+      "bookworm",
+      "trixie"
+    ],
     "bookworm": {
+      "arches": [
+        "amd64",
+        "arm64v8"
+      ],
+      "version": "4.5"
+    },
+    "trixie": {
       "arches": [
         "amd64",
         "arm64v8"
@@ -41,7 +62,8 @@
     "major": 4,
     "variants": [
       "ubi8",
-      "bookworm"
+      "bookworm",
+      "trixie"
     ],
     "version": "4.5"
   },
