@@ -1,0 +1,14 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ .Values.clusterRoleName }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ .Values.clusterRoleName }}
+subjects:
+- kind: ServiceAccount
+  name: {{ .Values.svcAccountName }}
+# The namespace must be specified explicitly.
+# # If deploying to the different namespace you have to change it.
+  namespace: {{ .Values.namespace }}

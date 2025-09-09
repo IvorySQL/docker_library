@@ -38,7 +38,7 @@
       "arches": [
         "amd64"
       ],
-      "version": "4.5"
+      "version": "4.6"
     },
     "redhat": "ubi8",
     "debian": [
@@ -50,14 +50,14 @@
         "amd64",
         "arm64v8"
       ],
-      "version": "4.5"
+      "version": "4.6"
     },
     "trixie": {
       "arches": [
         "amd64",
         "arm64v8"
       ],
-      "version": "4.5"
+      "version": "4.6"
     },
     "major": 4,
     "variants": [
@@ -65,7 +65,7 @@
       "bookworm",
       "trixie"
     ],
-    "version": "4.5"
+    "version": "4.6"
   },
   "1": {
     "debian": "trixie",

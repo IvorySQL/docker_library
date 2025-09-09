@@ -1,0 +1,14 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ .Values.clusterRoleName }}
+  namespace: {{ .Values.namespace }}
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - endpoints
+  resourceNames:
+  - kubernetes
+  verbs:
+  - get
