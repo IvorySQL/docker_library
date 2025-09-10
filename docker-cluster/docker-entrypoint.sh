@@ -61,7 +61,7 @@ postgresql:
     ssl: 'off'
     logging_collector: on
     log_directory: 'log'
-    unix_socket_directories: '..'
+    ivorysql.listen_addresses: '*'
   
   pg_hba:
     - local   all             all                                     peer

@@ -1,5 +1,5 @@
 services:
-    ivypatroni2:
+    ivypatroni3:
         image: ivorysql/docker-compose-ha-cluster:4.6-4.0.6-ubi8
         restart: always
         container_name: ivyhac3
