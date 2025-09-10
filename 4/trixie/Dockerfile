@@ -21,7 +21,7 @@ RUN mkdir /docker-entrypoint-initdb.d
 
 # Set environment variables for IvorySQL
 ENV IVORY_MAJOR 4
-ENV IVORY_VERSION 4.5
+ENV IVORY_VERSION 4.6
 ARG USE_CHINA_MIRROR=false
 
 # Use China mirror if specified
@@ -116,7 +116,7 @@ COPY --from=builder /var/local/ivorysql /var/local/ivorysql/
 COPY --from=builder /usr/local/bin/gosu /usr/local/bin/gosu
 
 ENV IVORY_MAJOR 4
-ENV IVORY_VERSION 4.5
+ENV IVORY_VERSION 4.6
 ARG USE_CHINA_MIRROR=false
 RUN mkdir /docker-entrypoint-initdb.d
 

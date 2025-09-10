@@ -1,0 +1,17 @@
+services:
+    ivypatroni1:
+        image: ivorysql/docker-compose-ha-cluster:4.6-4.0.6-ubi8
+        restart: always
+        container_name: ivyhac1
+        user: "ivorysql"
+        environment:
+            PATRONI_SCOPE: ivory-cluster
+            ETCD_HOSTS: <cluster1_ip>:2379,<cluster2_ip>:2379,<cluster3_ip>:2379
+            IVORYSQL_PASSWORD: 123456
+            IVORYSQL_HOST_AUTH_METHOD: md5
+            PATRONI_SERVICE_NAME: ivypatroni1
+            IVORYSQL_HOST: <cluster1_ip>
+        network_mode: host
+        volumes:
+          - /home/ivorysql/patroni:/var/local/ivorysql/ivorysql-4/patroni/
+          - /home/ivorysql/ivydata:/var/local/ivorysql/ivorysql-4/data/

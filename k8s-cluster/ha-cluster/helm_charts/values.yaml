@@ -1,0 +1,90 @@
+# Default values for ivorysql-patroni-hac.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 3
+namespace: ivorysql
+clusterName: ivorysql-patroni-hac
+svcAccountName: ivorysql-patroni-hac
+roleName: ivorysql-patroni-hac
+endpointName: ivorysql-patroni-hac
+roleBindingName: ivorysql-patroni-hac
+podServiceName: ivorysql-patroni-hac-pods
+clusterRoleName: ivorysql-patroni-hac-ep-access
+configMapName: ivyhac
+applicationName: ivyhac
+serviceConfigName: ivorysql-patroni-hac-config
+databaseServiceName: ivorysql-patroni-hac
+ivyHacReplicaServiceName: ivorysql-patroni-hac-repl
+majorVersion: 4
+compatibleMode: oracle
+
+image:
+  repository: ivorysql/k8s-ha-cluster
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "4.6-4.0.6-ubi8"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+encryption: "md5"
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+
+service:
+  type: ClusterIP
+  port: 80
+  db:
+    type: NodePort
+port:
+  dbPort: 32766
+  dbReplPort: 32765
+pvc:
+  storageClassName: incloud-nfs
+  accessModes: ReadWriteOnce
+  storageSize: 1Gi
+  confStorageSize: 16Mi
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+
+resources:
+   limits:
+     cpu: 1
+     memory: 1Gi
+   requests:
+     cpu: 200m
+     memory: 256Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

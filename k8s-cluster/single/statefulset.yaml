@@ -1,0 +1,75 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ivorysql-svc
+  namespace: default
+  labels:
+    application: ivorysql
+spec:
+  type: NodePort
+  selector:
+    application: ivorysql
+  ports:
+  - protocol: TCP
+    name: ivorysql
+    port: 5432
+    targetPort: 5432
+  - protocol: TCP
+    name: ivorysql-oracle
+    port: 1521
+    targetPort: 1521
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: ivorysql
+  namespace: default
+  labels:
+    application: ivorysql
+spec:
+  serviceName: ivorysql-svc
+  selector:
+    matchLabels:
+      application: ivorysql
+  template:
+    metadata:
+      labels:
+        application: ivorysql
+    spec:
+      containers:
+      - name: ivorysql
+        image: ivorysql/ivorysql:4.6-ubi8
+        imagePullPolicy: IfNotPresent        
+        readinessProbe:
+          exec:
+            command:
+              - "pg_isready"
+          initialDelaySeconds: 3
+          periodSeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 3
+        ports:
+        - containerPort: 5432
+          protocol: TCP
+        - containerPort: 1521
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /var/local/ivorysql/ivorysql-4/data
+          name: pgdata
+        env:
+        - name: IVORYSQL_PASSWORD
+          value: 'Hello@123'
+      terminationGracePeriodSeconds: 0
+  volumeClaimTemplates:
+  - metadata:
+      labels:
+        application: ivorysql
+      name: pgdata
+    spec:
+      storageClassName: incloud-nfs
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1Gi

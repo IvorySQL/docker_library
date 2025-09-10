@@ -1,0 +1,64 @@
+version: '3.7'
+
+services:
+  ivypatroni1:
+    image: ivorysql/docker-swarm-ha-cluster:4.6-4.0.6-ubi8
+    environment:
+      IVORYSQL_PASSWORD: 123456
+      PATRONI_SCOPE: hgdb-cluster1
+      PATRONI_SERVICE_NAME: ivypatroni1
+      IVORYSQL_DB_MODE: oracle
+      IVORYSQL_HOST_AUTH_METHOD: scram-sha-256
+      ETCD_HOSTS: etcd1:2379,etcd2:2379,etcd3:2379
+      IVORYSQL_HOST: ivypatroni1
+    volumes:
+      - /home/ivorysql/data:/var/local/ivorysql/ivorysql-4/data
+      - /home/ivorysql/patroni:/var/local/ivorysql/ivorysql-4/patroni
+    networks:
+      - ivoryhac-etcd_etcd-net
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints: [node.hostname == manager-node1]
+    ports:
+      - "5432:5432"
+      - "1521:1521"
+
+  ivypatroni2:
+    image: ivorysql/docker-swarm-ha-cluster:4.6-4.0.6-ubi8
+    environment:
+      IVORYSQL_PASSWORD: 123456
+      PATRONI_SCOPE: hgdb-cluster1
+      PATRONI_SERVICE_NAME: ivypatroni2
+      IVORYSQL_DB_MODE: oracle
+      IVORYSQL_HOST_AUTH_METHOD: scram-sha-256
+      ETCD_HOSTS: etcd1:2379,etcd2:2379,etcd3:2379
+      IVORYSQL_HOST: ivypatroni2
+    volumes:
+      - /home/ivorysql/data:/var/local/ivorysql/ivorysql-4/data
+      - /home/ivorysql/patroni:/var/local/ivorysql/ivorysql-4/patroni
+    networks:
+      - ivoryhac-etcd_etcd-net
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints: [node.hostname == manager-node2]
+    ports:
+      - "5433:5432"
+      - "1522:1521"
+
+networks:
+  ivoryhac-etcd_etcd-net:
+    external: true

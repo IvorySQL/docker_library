@@ -1,0 +1,183 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Values.clusterName }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    application: {{ .Values.applicationName }}
+    cluster-name: {{ .Values.clusterName }}
+spec:
+  #persistentVolumeClaimRetentionPolicy:
+  #  whenDeleted: Delete
+  replicas: {{ .Values.replicaCount }}
+  serviceName: {{ .Values.podServiceName }}
+  selector:
+    matchLabels:
+      application: {{ .Values.applicationName }}
+      cluster-name: {{ .Values.clusterName }}
+  template:
+    metadata:
+      labels:
+        application: {{ .Values.applicationName }}
+        cluster-name: {{ .Values.clusterName }}
+
+    spec:
+      serviceAccountName: {{ .Values.svcAccountName }}
+      initContainers:
+      - name: fix-permissions
+        image: busybox
+        command: ["sh", "-c", "chown -R 1000:1000 /var/local/ivorysql/ivorysql-{{ .Values.majorVersion }}/data && chmod -R 750 /var/local/ivorysql/ivorysql-{{ .Values.majorVersion}}/data "]
+        volumeMounts:
+        - name: pgdata
+          mountPath: /var/local/ivorysql/ivorysql-{{ .Values.majorVersion }}/data
+      containers:
+      - name: {{ .Values.clusterName }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command: ["/bin/bash"]
+        args: ["-c","/docker-entrypoint.sh;while true;do echo hello > /dev/null;sleep 1;done"]
+
+        readinessProbe:
+          httpGet:
+            scheme: HTTP
+            path: /readiness
+            port: 8008
+          initialDelaySeconds: 3
+          periodSeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 3
+        ports:
+        - containerPort: 8008
+          protocol: TCP
+        - containerPort: 5432
+          protocol: TCP
+        - containerPort: 1521
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /var/local/ivorysql/ivorysql-{{ .Values.majorVersion }}/data
+          name: pgdata
+        - mountPath: /var/local/ivorysql/ivorysql-{{ .Values.majorVersion }}/patroni/
+          name: ivyhac-config
+        - mountPath: /var/local/ivorysql/ivorysql-{{ .Values.majorVersion }}/patroni/pg_hba.txt
+          name: ivyhac
+          subPath: pg_hba.txt
+        - mountPath: /var/local/ivorysql/ivorysql-{{ .Values.majorVersion }}/patroni/tags.txt
+          name: ivyhac
+          subPath: tags.txt
+        - mountPath: /var/local/ivorysql/ivorysql-{{ .Values.majorVersion }}/patroni/log.txt
+          name: ivyhac
+          subPath: log.txt
+        - name: secret
+          mountPath: /var/local/ivorysql/ivorysql-{{ .Values.majorVersion }}/secret
+          readOnly: true
+        env:
+        - name: PATRONI_KUBERNETES_POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: PATRONI_KUBERNETES_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: PATRONI_KUBERNETES_BYPASS_API_SERVICE
+          value: 'true'
+        - name: PATRONI_KUBERNETES_USE_ENDPOINTS
+          value: 'true'
+        - name: PATRONI_KUBERNETES_LABELS
+          value: '{application: ivyhac, cluster-name: ivorysql-patroni-hac}'
+        - name: PATRONI_KUBERNETES_PORTS
+          value: '[{"name": "ivorysql", "port": 5432}]'
+        - name: IVORYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.clusterName }}
+              key: ivorysql-password
+        - name: PATRONI_REPLICATOR_USERNAME
+          value: replicator
+        - name: PATRONI_REPLICATOR_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.clusterName }}
+              key: replicator-password
+        - name: PATRONI_REWIND_USERNAME
+          value: rewind_user
+        - name: PATRONI_REWIND_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.clusterName }}
+              key: rewind-password
+        - name: PATRONI_SCOPE
+          value: {{ .Values.clusterName }}
+        - name: PATRONI_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: PATRONI_POSTGRESQL_CONNECT_ADDRESS
+          value: $(PATRONI_NAME).{{ .Values.podServiceName }}:5432
+        - name: PATRONI_RESTAPI_CONNECT_ADDRESS
+          value: $(PATRONI_NAME).{{ .Values.podServiceName }}:8008
+        - name: PATRONI_POSTGRESQL_DATA_DIR
+          value: /var/local/ivorysql/ivorysql-{{ .Values.majorVersion }}/data
+        - name: PATRONI_POSTGRESQL_PGPASS
+          value: /tmp/.pgpass
+        - name: PATRONI_POSTGRESQL_LISTEN
+          value: '0.0.0.0:5432'
+        - name: PATRONI_RESTAPI_LISTEN
+          value: '0.0.0.0:8008'
+        - name: SLEEP_TIME
+          value: '0'
+        - name: IVORYSQL_HOST_AUTH_METHOD
+          value: {{ .Values.encryption }}
+        - name: IVORYSQL_COMPATIBLE_MODE
+          value: {{ .Values.compatibleMode }}
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: ivyhac
+          configMap:
+            name: {{ .Values.configMapName }}
+            items:
+              - key: pg_hba.txt
+                path: pg_hba.txt
+              - key: tags.txt
+                path: tags.txt
+              - key: log.txt
+                path: log.txt
+        - name: secret
+          secret:
+            secretName: {{ .Values.clusterName }}
+      terminationGracePeriodSeconds: 0
+  volumeClaimTemplates:
+  - metadata:
+      labels:
+        application: {{ .Values.applicationName }}
+        cluster-name: {{ .Values.clusterName }}
+      name: pgdata
+    spec:
+      storageClassName: {{ .Values.pvc.storageClassName }}
+      accessModes:
+      - {{ .Values.pvc.accessModes }}
+      resources:
+        requests:
+          storage: {{ .Values.pvc.storageSize }}
+    spec:
+      storageClassName: {{ .Values.pvc.storageClassName }}
+      accessModes:
+      - {{ .Values.pvc.accessModes }}
+      resources:
+        requests:
+          storage: {{ .Values.pvc.confStorageSize }}
+
+  - metadata:
+      labels:
+        application: {{ .Values.applicationName }}
+        cluster-name: {{ .Values.clusterName }}
+      name: ivyhac-config
+    spec:
+      storageClassName: {{ .Values.pvc.storageClassName }}
+      accessModes:
+      - {{ .Values.pvc.accessModes }}
+      resources:
+        requests:
+          storage: {{ .Values.pvc.confStorageSize }}

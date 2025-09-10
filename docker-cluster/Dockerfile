@@ -1,9 +1,3 @@
-#
-# NOTE: THIS DOCKERFILE IS GENERATED VIA "apply-templates.sh"
-#
-# PLEASE DO NOT EDIT IT DIRECTLY.
-#
-
 FROM redhat/ubi8:latest as builder
 
 # explicitly set user/group IDs
@@ -17,7 +11,7 @@ RUN groupadd -g 1000 ivorysql; \
         chown -R ivorysql:ivorysql /var/lib/ivorysql
 
 RUN mkdir /docker-entrypoint-initdb.d
-
+# install ivorysql 4.6
 ENV IVORY_MAJOR 4
 ENV IVORY_VERSION 4.6
 
@@ -71,50 +65,46 @@ RUN mkdir -p /usr/src/ivorysql; \
 		/usr/local/share/doc \
 		/usr/local/share/man
 
-RUN chown -R ivorysql:ivorysql /var/local/ivorysql/ivorysql-$IVORY_MAJOR
-RUN ARCH="$(uname -m)"; \
-    case "${ARCH}" in \
-        x86_64)  ARCH='amd64' ;; \
-        aarch64) ARCH='arm64' ;; \
-        *) echo "Unsupported architecture: ${ARCH}"; exit 1 ;; \
-    esac; \
-    curl -o /usr/local/bin/gosu -SL "https://github.com/tianon/gosu/releases/download/1.11/gosu-${ARCH}"; \
-    chmod +x /usr/local/bin/gosu
-
 FROM redhat/ubi8:latest
 
-COPY --from=builder /var/local/ivorysql /var/local/ivorysql/
-COPY --from=builder /usr/local/bin/gosu /usr/local/bin/gosu
+RUN useradd -u 1000 ivorysql
+
+COPY --from=builder --chown=ivorysql:ivorysql /var/local/ivorysql /var/local/ivorysql/
 
 ENV IVORY_MAJOR 4
 ENV IVORY_VERSION 4.6
 
-RUN mkdir /docker-entrypoint-initdb.d
-
-RUN useradd -u 1000 ivorysql
-
 RUN dnf install -y \
-    lz4 lz4-devel lz4-libs krb5-devel libxslt-devel libicu-devel && dnf -y clean all 
+    lz4 lz4-devel lz4-libs krb5-devel libxslt-devel libicu-devel && dnf -y clean all
 
-RUN chown -R ivorysql:ivorysql /var/local/ivorysql
-RUN chown -R ivorysql:ivorysql /usr/local/bin
+#install patroni 4.0.6
+env PATRONI_VER 4.0.6
+
+RUN dnf -y install --nodocs \
+                --setopt=skip_missing_names_on_install=False \
+                python3-pip \
+                python3-psutil \
+                python3-psycopg2 \
+        && dnf -y clean all
+
+RUN pip3 install --upgrade python-dateutil \
+	&& pip3 install patroni[etcd]=="${PATRONI_VER}"
 
 ENV PGDATA /var/local/ivorysql/ivorysql-$IVORY_MAJOR/data
+ENV PATRONICONF /var/local/ivorysql/ivorysql-$IVORY_MAJOR/patroni
 # this 1777 will be replaced by 0700 at runtime (allows semi-arbitrary "--user" values)
-RUN mkdir -p "$PGDATA" && chown -R ivorysql:ivorysql "$PGDATA" && chmod 1777 "$PGDATA"
-RUN mkdir -p /var/run/postgresql && chown -R ivorysql:ivorysql /var/run/postgresql && chmod 3777 /var/run/postgresql
+RUN mkdir -p "$PGDATA" && chown -R ivorysql:ivorysql "$PGDATA" && chmod 750 "$PGDATA"
+RUN mkdir -p "$PATRONICONF" && chown -R ivorysql:ivorysql "$PATRONICONF" && chmod 1777 "$PATRONICONF"
 
-VOLUME $PGDATA
+COPY docker-entrypoint.sh /
+RUN chmod +x docker-entrypoint.sh
+
+VOLUME $PGDATA $PATRONICONF
 
 ENV PATH $PATH:/var/local/ivorysql/ivorysql-$IVORY_MAJOR/bin
 
-COPY docker-entrypoint.sh docker-ensure-initdb.sh /usr/local/bin/
-RUN ln -sT docker-ensure-initdb.sh /usr/local/bin/docker-enforce-initdb.sh
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
-ENTRYPOINT ["docker-entrypoint.sh"]
-
-STOPSIGNAL SIGINT
-
 EXPOSE 5432 5866 1521
 
-CMD ["postgres"]
+USER ivorysql
+
+ENTRYPOINT ["/bin/sh", "/docker-entrypoint.sh"]
