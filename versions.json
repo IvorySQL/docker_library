@@ -67,6 +67,40 @@
     ],
     "version": "4.6"
   },
+  "5": {
+    "ubi8": {
+      "arches": [
+        "amd64"
+      ],
+      "version": "5.0"
+    },
+    "redhat": "ubi8",
+    "debian": [
+      "bookworm",
+      "trixie"
+    ],
+    "bookworm": {
+      "arches": [
+        "amd64",
+        "arm64v8"
+      ],
+      "version": "5.0"
+    },
+    "trixie": {
+      "arches": [
+        "amd64",
+        "arm64v8"
+      ],
+      "version": "5.0"
+    },
+    "major": 5,
+    "variants": [
+      "ubi8",
+      "bookworm",
+      "trixie"
+    ],
+    "version": "5.0"
+  },
   "1": {
     "debian": "trixie",
     "trixie": {

@@ -23,7 +23,7 @@ image:
   repository: ivorysql/k8s-ha-cluster
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "4.6-4.0.6-ubi8"
+  tag: "5.0-4.0.6-ubi8"
 
 imagePullSecrets: []
 nameOverride: ""

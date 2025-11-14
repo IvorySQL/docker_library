@@ -1,6 +1,6 @@
 services:
     ivypatroni1:
-        image: ivorysql/docker-compose-ha-cluster:4.6-4.0.6-ubi8
+        image: ivorysql/docker-compose-ha-cluster:5.0-4.0.6-ubi8
         restart: always
         container_name: ivyhac1
         user: "ivorysql"
@@ -13,5 +13,5 @@ services:
             IVORYSQL_HOST: <cluster1_ip>
         network_mode: host
         volumes:
-          - /home/ivorysql/patroni:/var/local/ivorysql/ivorysql-4/patroni/
-          - /home/ivorysql/ivydata:/var/local/ivorysql/ivorysql-4/data/
+          - /home/ivorysql/patroni:/var/local/ivorysql/ivorysql-5/patroni/
+          - /home/ivorysql/ivydata:/var/local/ivorysql/ivorysql-5/data/
