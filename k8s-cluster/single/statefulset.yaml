@@ -55,7 +55,7 @@ spec:
         - containerPort: 1521
           protocol: TCP
         volumeMounts:
-        - mountPath: /var/local/ivorysql/ivorysql-4/data
+        - mountPath: /var/local/ivorysql/ivorysql-5/data
           name: pgdata
         env:
         - name: IVORYSQL_PASSWORD
