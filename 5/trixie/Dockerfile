@@ -5,7 +5,7 @@
 #
 
 # Use Debian  as the base image
-FROM  debian:bookworm-slim as builder 
+FROM  debian:trixie-slim as builder 
 
 # explicitly set user/group IDs
 RUN groupadd -g 1000 ivorysql; \
@@ -20,8 +20,8 @@ RUN groupadd -g 1000 ivorysql; \
 RUN mkdir /docker-entrypoint-initdb.d
 
 # Set environment variables for IvorySQL
-ENV IVORY_MAJOR 4
-ENV IVORY_VERSION 4.6
+ENV IVORY_MAJOR 5
+ENV IVORY_VERSION 5.0
 ARG USE_CHINA_MIRROR=false
 
 # Use China mirror if specified
@@ -110,15 +110,15 @@ RUN wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/downloa
 
 RUN chmod +x /usr/local/bin/gosu
 
-FROM  debian:bookworm-slim
+FROM  debian:trixie-slim
 
 RUN useradd -u 1000 ivorysql
 
 COPY --from=builder --chown=ivorysql:ivorysql  /var/local/ivorysql /var/local/ivorysql/
 COPY --from=builder --chown=ivorysql:ivorysql  /usr/local/bin/gosu /usr/local/bin/gosu
 
-ENV IVORY_MAJOR 4
-ENV IVORY_VERSION 4.6
+ENV IVORY_MAJOR 5
+ENV IVORY_VERSION 5.0
 ARG USE_CHINA_MIRROR=false
 RUN mkdir /docker-entrypoint-initdb.d
 
@@ -134,7 +134,7 @@ RUN apt-get update && \
         libkrb5-dev \
         libxslt1-dev \
         libldap-common \
-        libldap-2.5-0   \
+        libldap2  \
         libldap2-dev     \
         libreadline-dev \
         libicu-dev \

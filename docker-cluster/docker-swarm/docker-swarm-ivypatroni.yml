@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   ivypatroni1:
-    image: ivorysql/docker-swarm-ha-cluster:4.6-4.0.6-ubi8
+    image: ivorysql/docker-swarm-ha-cluster:5.0-4.0.6-ubi8
     environment:
       IVORYSQL_PASSWORD: 123456
       PATRONI_SCOPE: hgdb-cluster1
@@ -12,8 +12,8 @@ services:
       ETCD_HOSTS: etcd1:2379,etcd2:2379,etcd3:2379
       IVORYSQL_HOST: ivypatroni1
     volumes:
-      - /home/ivorysql/data:/var/local/ivorysql/ivorysql-4/data
-      - /home/ivorysql/patroni:/var/local/ivorysql/ivorysql-4/patroni
+      - /home/ivorysql/data:/var/local/ivorysql/ivorysql-5/data
+      - /home/ivorysql/patroni:/var/local/ivorysql/ivorysql-5/patroni
     networks:
       - ivoryhac-etcd_etcd-net
     deploy:
@@ -31,7 +31,7 @@ services:
       - "1521:1521"
 
   ivypatroni2:
-    image: ivorysql/docker-swarm-ha-cluster:4.6-4.0.6-ubi8
+    image: ivorysql/docker-swarm-ha-cluster:5.0-4.0.6-ubi8
     environment:
       IVORYSQL_PASSWORD: 123456
       PATRONI_SCOPE: hgdb-cluster1
@@ -41,8 +41,8 @@ services:
       ETCD_HOSTS: etcd1:2379,etcd2:2379,etcd3:2379
       IVORYSQL_HOST: ivypatroni2
     volumes:
-      - /home/ivorysql/data:/var/local/ivorysql/ivorysql-4/data
-      - /home/ivorysql/patroni:/var/local/ivorysql/ivorysql-4/patroni
+      - /home/ivorysql/data:/var/local/ivorysql/ivorysql-5/data
+      - /home/ivorysql/patroni:/var/local/ivorysql/ivorysql-5/patroni
     networks:
       - ivoryhac-etcd_etcd-net
     deploy:

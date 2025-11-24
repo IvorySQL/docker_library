@@ -112,15 +112,15 @@ RUN chmod +x /usr/local/bin/gosu
 
 FROM  debian:trixie-slim
 
-COPY --from=builder /var/local/ivorysql /var/local/ivorysql/
-COPY --from=builder /usr/local/bin/gosu /usr/local/bin/gosu
+RUN useradd -u 1000 ivorysql
+
+COPY --from=builder --chown=ivorysql:ivorysql  /var/local/ivorysql /var/local/ivorysql/
+COPY --from=builder --chown=ivorysql:ivorysql  /usr/local/bin/gosu /usr/local/bin/gosu
 
 ENV IVORY_MAJOR 4
 ENV IVORY_VERSION 4.6
 ARG USE_CHINA_MIRROR=false
 RUN mkdir /docker-entrypoint-initdb.d
-
-RUN useradd -u 1000 ivorysql
 
 # Use China mirror if specified
 RUN if [ "$USE_CHINA_MIRROR" = "true" ]; then \
@@ -137,12 +137,10 @@ RUN apt-get update && \
         libldap2  \
         libldap2-dev     \
         libreadline-dev \
-        libicu-dev && \
+        libicu-dev \
+        libossp-uuid-dev && \
     apt-get clean
 
-
-RUN chown -R ivorysql:ivorysql /var/local/ivorysql
-RUN chown -R ivorysql:ivorysql /usr/local/bin
 
 ENV PGDATA /var/local/ivorysql/ivorysql-$IVORY_MAJOR/data
 

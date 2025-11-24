@@ -83,21 +83,24 @@ RUN ARCH="$(uname -m)"; \
 
 FROM redhat/ubi8:latest
 
-COPY --from=builder /var/local/ivorysql /var/local/ivorysql/
-COPY --from=builder /usr/local/bin/gosu /usr/local/bin/gosu
+RUN useradd -u 1000 ivorysql
+
+COPY --from=builder --chown=ivorysql:ivorysql /var/local/ivorysql /var/local/ivorysql
+COPY --from=builder --chown=ivorysql:ivorysql /usr/local/bin/gosu /usr/local/bin/gosu
 
 ENV IVORY_MAJOR 3
 ENV IVORY_VERSION 3.4
 
 RUN mkdir /docker-entrypoint-initdb.d
 
-RUN useradd -u 1000 ivorysql
+RUN curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-8.repo; \
+    sed -i -e '/mirrors.cloud.aliyuncs.com/d' -e '/mirrors.aliyuncs.com/d' /etc/yum.repos.d/CentOS-Base.repo
 
-RUN dnf install -y \
-    lz4 lz4-devel lz4-libs krb5-devel libxslt-devel libicu-devel && dnf -y clean all 
-
-RUN chown -R ivorysql:ivorysql /var/local/ivorysql
-RUN chown -R ivorysql:ivorysql /usr/local/bin
+RUN dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm; \
+    dnf install -y lz4 lz4-devel lz4-libs krb5-devel libxslt-devel libicu-devel; \
+    dnf install -y e2fsprogs-devel libuuid-devel;\
+    dnf install -y --enablerepo=*ower*ools uuid-devel;\
+    dnf -y clean all
 
 ENV PGDATA /var/local/ivorysql/ivorysql-$IVORY_MAJOR/data
 # this 1777 will be replaced by 0700 at runtime (allows semi-arbitrary "--user" values)
