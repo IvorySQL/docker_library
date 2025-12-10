@@ -38,7 +38,7 @@ spec:
     spec:
       containers:
       - name: ivorysql
-        image: ivorysql/ivorysql:5.0-ubi8
+        image: ivorysql/ivorysql:5.1-ubi8
         imagePullPolicy: IfNotPresent        
         readinessProbe:
           exec:

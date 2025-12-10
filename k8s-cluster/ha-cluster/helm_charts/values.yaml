@@ -16,14 +16,14 @@ applicationName: ivyhac
 serviceConfigName: ivorysql-patroni-hac-config
 databaseServiceName: ivorysql-patroni-hac
 ivyHacReplicaServiceName: ivorysql-patroni-hac-repl
-majorVersion: 4
+majorVersion: 5
 compatibleMode: oracle
 
 image:
   repository: ivorysql/k8s-ha-cluster
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "5.0-4.0.6-ubi8"
+  tag: "5.1-4.0.6-ubi8"
 
 imagePullSecrets: []
 nameOverride: ""
