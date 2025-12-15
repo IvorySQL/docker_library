@@ -72,7 +72,7 @@
       "arches": [
         "amd64"
       ],
-      "version": "5.0"
+      "version": "5.1"
     },
     "redhat": "ubi8",
     "debian": [
@@ -84,14 +84,14 @@
         "amd64",
         "arm64v8"
       ],
-      "version": "5.0"
+      "version": "5.1"
     },
     "trixie": {
       "arches": [
         "amd64",
         "arm64v8"
       ],
-      "version": "5.0"
+      "version": "5.1"
     },
     "major": 5,
     "variants": [
@@ -99,7 +99,7 @@
       "bookworm",
       "trixie"
     ],
-    "version": "5.0"
+    "version": "5.1"
   },
   "1": {
     "debian": "trixie",

@@ -1,7 +1,7 @@
 FROM redhat/ubi8:latest as builder
 
 ARG MAJOR_VERSION="5"
-ARG FULL_VERSION="5.0"
+ARG FULL_VERSION="5.1"
 
 # explicitly set user/group IDs
 RUN groupadd -g 1000 ivorysql; \
@@ -71,7 +71,7 @@ RUN mkdir -p /usr/src/ivorysql; \
 FROM redhat/ubi8:latest
 
 ARG MAJOR_VERSION="5"
-ARG FULL_VERSION="5.0"
+ARG FULL_VERSION="5.1"
 
 RUN groupadd -g 1000 ivorysql; \
                 useradd -u 1000 -g ivorysql -d /var/local/ivorysql -s /bin/sh ivorysql;

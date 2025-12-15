@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   ivypatroni1:
-    image: ivorysql/docker-swarm-ha-cluster:5.0-4.0.6-ubi8
+    image: ivorysql/docker-swarm-ha-cluster:5.1-4.0.6-ubi8
     environment:
       IVORYSQL_PASSWORD: 123456
       PATRONI_SCOPE: hgdb-cluster1
@@ -31,7 +31,7 @@ services:
       - "1521:1521"
 
   ivypatroni2:
-    image: ivorysql/docker-swarm-ha-cluster:5.0-4.0.6-ubi8
+    image: ivorysql/docker-swarm-ha-cluster:5.1-4.0.6-ubi8
     environment:
       IVORYSQL_PASSWORD: 123456
       PATRONI_SCOPE: hgdb-cluster1
