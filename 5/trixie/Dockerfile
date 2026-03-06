@@ -72,7 +72,7 @@ RUN apt-get install -y make \
     libossp-uuid-dev\
     curl 
  
-RUN wget https://mirrors.ustc.edu.cn/gnu/bison/bison-3.0.4.tar.gz; \
+RUN wget https://ftpmirror.gnu.org/gnu/bison/bison-3.0.4.tar.gz; \
     tar -xzvf bison-3.0.4.tar.gz; \
     cd bison-3.0.4 ; \
     sed -i 's/IO_ftrylockfile/IO_EOF_SEEN/' lib/*.c ;\
