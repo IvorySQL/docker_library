@@ -196,7 +196,7 @@ docker_process_init_files() {
 #    ie: docker_process_sql -f my-file.sql
 #    ie: docker_process_sql <my-file.sql
 docker_process_sql() {
-	local query_runner=( psql -v ON_ERROR_STOP=1 --username "$IVORYSQL_USER" -p 5866 --no-password --no-psqlrc )
+	local query_runner=( psql -v ON_ERROR_STOP=1 --username "$IVORYSQL_USER" -p "${PGPORT:-5866}" --no-password --no-psqlrc )
 	if [ -n "$IVORYSQL_DB" ]; then
 		query_runner+=( --dbname "$IVORYSQL_DB" )
 	fi
