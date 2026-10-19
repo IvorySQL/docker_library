@@ -85,7 +85,7 @@ spec:
         - name: PATRONI_KUBERNETES_USE_ENDPOINTS
           value: 'true'
         - name: PATRONI_KUBERNETES_LABELS
-          value: '{application: ivyhac, cluster-name: ivorysql-patroni-hac}'
+          value: {{ dict "application" .Values.applicationName "cluster-name" .Values.clusterName | toJson | quote }}
         - name: PATRONI_KUBERNETES_PORTS
           value: '[{"name": "ivorysql", "port": 5432}]'
         - name: IVORYSQL_PASSWORD
